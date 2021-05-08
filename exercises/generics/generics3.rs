@@ -10,18 +10,25 @@
 
 // Execute 'rustlings hint generics3' for hints!
 
-// I AM NOT DONE
+use std::fmt::Display;
+use std::fmt::Formatter;
 
-pub struct ReportCard {
-    pub grade: f32,
+pub struct ReportCard<T: Display> {
+    pub grade: T,
     pub student_name: String,
     pub student_age: u8,
 }
 
-impl ReportCard {
+impl<T: Display> Display for ReportCard<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} ({}) - achieved a grade of {}",
+            self.student_name, self.student_age, self.grade)
+    }
+}
+
+impl<T: Display> ReportCard<T> {
     pub fn print(&self) -> String {
-        format!("{} ({}) - achieved a grade of {}",
-            &self.student_name, &self.student_age, &self.grade)
+        format!("{}", self)
     }
 }
 
@@ -31,7 +38,7 @@ mod tests {
 
     #[test]
     fn generate_numeric_report_card() {
-        let report_card = ReportCard {
+        let report_card = ReportCard::<f32> {
             grade: 2.1,
             student_name: "Tom Wriggle".to_string(),
             student_age: 12,
@@ -44,9 +51,8 @@ mod tests {
 
     #[test]
     fn generate_alphabetic_report_card() {
-        // TODO: Make sure to change the grade here after you finish the exercise.
-        let report_card = ReportCard {
-            grade: 2.1,
+        let report_card = ReportCard::<&str> {
+            grade: "A+",
             student_name: "Gary Plotter".to_string(),
             student_age: 11,
         };
